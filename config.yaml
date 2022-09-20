@@ -84,18 +84,18 @@ params:
       - image: Glacier.jpg
         subtitle: A short introduction to my experiences and interests
         title: About me
-        url: blogs/aliquam
-      - image: Waterfall.jpg
+        url: blogs/about_me
+      - image: London_bikes.jpg
         subtitle: Analysis of TfL bike rentals over the past years
         title: TfL bike rental analysis
         url: blogs/bike
-      - image: Stone.jpg
-        subtitle: XXXXXXX
+      - image: Climate_change.jpg
+        subtitle: Analysis of climate change and temperature anomalies
         title: Climate change and temperature anomalies
         url: blogs/climate
-      - image: Coast.jpg
-        subtitle: XXXXX
-        title: Omega Group plc- Pay Discrimination 
+      - image: Omega.jpg
+        subtitle: Exploring differences between the salaries of men and women working at Omega
+        title: Omega Group - Pay Discrimination 
         url: blogs/omega
       # - image: pic05.jpg
       #   subtitle: Ipsum Dolor Sit Amet
@@ -106,13 +106,8 @@ params:
       #   title: Etiam
       #   url: blogs/ipsum
   two:
-    buttonText: All blogs
+    buttonText: Click here
     enable: yes
-    # subtitle: "Nullam et orci eu lorem consequat tincidunt vivamus et sagittis libero.
-    #   \n    Mauris aliquet magna magna sed nunc rhoncus pharetra. \n    Pellentesque
-    #   condimentum sem. In efficitur ligula tate urna. Maecenas laoreet massa vel lacinia
-    #   pellentesque lorem ipsum dolor. \n    Nullam et orci eu lorem consequat tincidunt.
-    #   Vivamus et sagittis libero.\n    Mauris aliquet magna magna sed nunc rhoncus
-    #   amet pharetra et feugiat tempus."
-    # title: Massa libero
-    url: blogs
+    subtitle: "If you ever struggle to explain normal distribution to someone, just show them the below."
+    title: Real life example of Normal distribution
+    url: https://twitter.com/NunoClara_/status/1571142901870268417?s=20&t=A972oDsKVLwRZGm8bUp7Cw

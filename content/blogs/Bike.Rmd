@@ -5,12 +5,27 @@ categories:
 date: "2017-10-31T22:26:13-05:00"
 description: Analysis of TfL bike rentals over the past years
 draft: false
-image: Climb_wide.jpg
+image: London_bikes.jpg
 keywords: ""
 slug: bike
 title: TfL bike rental analysis
 ---
 
+```{r, setup, echo=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
 
 ```{r load-libraries, include=FALSE}
 library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
@@ -59,7 +74,6 @@ Let's compare the monthly changes in TfL bike rentals to the average of the year
 ```{r, challenge 1 plot 1}
 
 glimpse(bike)
-bike
 
 # creating a data frame to calculate the monthly average for years 16 to 19
 bike_16to19 <- bike %>% 
@@ -90,7 +104,7 @@ ggplot(joined, aes(x = month, group = year)) +
 
 ```
 
-Further, let's have a look at Weekly Changes in TfL bike rentals from 2017 - 2022.
+Further, let's have a look at Weekly Changes in TfL bike rentals from 2017 - 2022 by calculating the expected number of rentals per week between 2016-2019 and then, see how each week of 2020-2022 compares to the expected rentals.
 
 ```{r, challenge 1 plot 2}
 
@@ -140,16 +154,4 @@ ggplot(joined_weekly_mutated, aes(x = week, y = Excess_rentals_Perc)) +
   labs(title = "Weekly Changes in TfL bike rentals", subtitle = "% change from weekly average calculated between 2016 annd 2019", x = "Week", y = "Bike Rentals")
 
 ```
-
-For both of these graphs, you have to calculate the expected number of
-rentals per week or month between 2016-2019 and then, see how each
-week/month of 2020-2022 compares to the expected rentals. Think of the
-calculation `excess_rentals = actual_rentals - expected_rentals`.
-
-We chose the mean to calculate our expected bike rentals because it
-allows for a more realistic prediction of future bike rentals. Many
-outliers are cause by events such as tube strikes which are not one-off
-occurrences and are likely to repeat in the future. Furthermore, the
-expected rentals are calculated using data from three years so the
-extreme points are softened.
 

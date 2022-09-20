@@ -5,7 +5,7 @@ categories:
 date: "2017-10-31T22:26:13-05:00"
 description: Analysis of TfL bike rentals over the past years
 draft: false
-image: Climb_wide.jpg
+image: London_bikes.jpg
 keywords: ""
 slug: bike
 title: TfL bike rental analysis
@@ -20,12 +20,12 @@ title: TfL bike rental analysis
 
 # Download TFL data to temporary file
 httr::GET(url, write_disk(bike.temp &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
-<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2022-09-06T12%3A41%3A48/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20220920%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220920T104839Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=8488d4fbb94edcfdcbe563d93b437f5b8ea12d18ec9f1433ebfc3690e155cbc4&amp;X-Amz-SignedHeaders=host]
-##   Date: 2022-09-20 10:48
+<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2022-09-06T12%3A41%3A48/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20220920%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220920T163713Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=5f5c328647e6cc28db92e0adc38bc452c562753796812ddea5d12d37319953e7&amp;X-Amz-SignedHeaders=host]
+##   Date: 2022-09-20 16:37
 ##   Status: 200
 ##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ##   Size: 180 kB
-## &lt;ON DISK&gt;  /var/folders/vp/lsrs42cx59z_tn6kqhk0cm500000gn/T//RtmphJNHES/file39ec524c9d92.xlsx</code></pre>
+## &lt;ON DISK&gt;  /var/folders/vp/lsrs42cx59z_tn6kqhk0cm500000gn/T//Rtmppu4LoJ/file4cf4134786c2.xlsx</code></pre>
 <pre class="r"><code># Use read_excel to read it as dataframe
 bike0 &lt;- read_excel(bike.temp,
                    sheet = &quot;Data&quot;,
@@ -47,21 +47,6 @@ bike &lt;- bike0 %&gt;%
 ## $ year        &lt;dbl&gt; 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010…
 ## $ month       &lt;ord&gt; Jul, Jul, Aug, Aug, Aug, Aug, Aug, Aug, Aug, Aug, Aug, Aug…
 ## $ week        &lt;dbl&gt; 30, 30, 30, 31, 31, 31, 31, 31, 31, 31, 32, 32, 32, 32, 32…</code></pre>
-<pre class="r"><code>bike</code></pre>
-<pre><code>## # A tibble: 4,416 × 5
-##    day                 bikes_hired  year month  week
-##    &lt;dttm&gt;                    &lt;dbl&gt; &lt;dbl&gt; &lt;ord&gt; &lt;dbl&gt;
-##  1 2010-07-30 00:00:00        6897  2010 Jul      30
-##  2 2010-07-31 00:00:00        5564  2010 Jul      30
-##  3 2010-08-01 00:00:00        4303  2010 Aug      30
-##  4 2010-08-02 00:00:00        6642  2010 Aug      31
-##  5 2010-08-03 00:00:00        7966  2010 Aug      31
-##  6 2010-08-04 00:00:00        7893  2010 Aug      31
-##  7 2010-08-05 00:00:00        8724  2010 Aug      31
-##  8 2010-08-06 00:00:00        9797  2010 Aug      31
-##  9 2010-08-07 00:00:00        6631  2010 Aug      31
-## 10 2010-08-08 00:00:00        7864  2010 Aug      31
-## # … with 4,406 more rows</code></pre>
 <pre class="r"><code># creating a data frame to calculate the monthly average for years 16 to 19
 bike_16to19 &lt;- bike %&gt;% 
   filter (year %in% 2016:2019) %&gt;% 
@@ -72,13 +57,12 @@ bike_16to19 &lt;- bike %&gt;%
 bike_17to22 &lt;- bike %&gt;% 
   filter (year %in% 2017:2022) %&gt;% 
   group_by (month, year) %&gt;% 
-  summarize (avg_bikes_17to22 = mean(bikes_hired))</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;month&#39;. You can override using the
-## `.groups` argument.</code></pre>
-<pre class="r"><code># joining the two data frames to create one data frame that can be used for the creation of the graph
-joined &lt;- left_join(bike_17to22, bike_16to19)</code></pre>
-<pre><code>## Joining, by = &quot;month&quot;</code></pre>
-<pre class="r"><code># plotting monthly changes in TfL bike rentals faceted by year 
+  summarize (avg_bikes_17to22 = mean(bikes_hired))
+
+# joining the two data frames to create one data frame that can be used for the creation of the graph
+joined &lt;- left_join(bike_17to22, bike_16to19)
+
+# plotting monthly changes in TfL bike rentals faceted by year 
 ggplot(joined, aes(x = month, group = year)) + 
   geom_line(aes(y = avg_bikes_16to19), group = 1, color = &quot;blue&quot;, size = 1) + 
   geom_line(aes(y = avg_bikes_17to22, group = 1)) + 
@@ -88,8 +72,8 @@ ggplot(joined, aes(x = month, group = year)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = &quot;Monthly changes in TfL bike rentals&quot;, subtitle = &quot;Change from monthly average shown in blue and calculated between 2016 - 2019&quot;, x = &quot;&quot;, y = &quot;Bike rentals&quot;, caption = &quot;Source: TfL, London Data Store&quot;) </code></pre>
-<p><img src="/blogs/Bike_files/figure-html/challenge%201%20plot%201-1.png" width="672" /></p>
-<p>Further, let’s have a look at Weekly Changes in TfL bike rentals from 2017 - 2022.</p>
+<p><img src="/blogs/Bike_files/figure-html/challenge%201%20plot%201-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>Further, let’s have a look at Weekly Changes in TfL bike rentals from 2017 - 2022 by calculating the expected number of rentals per week between 2016-2019 and then, see how each week of 2020-2022 compares to the expected rentals.</p>
 <pre class="r"><code>#bike
 
 # creating a data frame to calculate the weekly average for years 16 to 19
@@ -102,13 +86,12 @@ bike_16to19_weekly &lt;- bike %&gt;%
 bike_17to22_weekly &lt;- bike %&gt;% 
   filter (year %in% 2017:2022) %&gt;% 
   group_by (week, year) %&gt;% 
-  summarize (avg_bikes_17to22_weekly = mean(bikes_hired))</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;week&#39;. You can override using the
-## `.groups` argument.</code></pre>
-<pre class="r"><code># joining the two data frames to create one data frame that can be used for the creation of the graph
-joined_weekly &lt;- left_join(bike_17to22_weekly, bike_16to19_weekly)</code></pre>
-<pre><code>## Joining, by = &quot;week&quot;</code></pre>
-<pre class="r"><code># adding two columns to calculate the percent change and filter out data value in week 52 of year 2022
+  summarize (avg_bikes_17to22_weekly = mean(bikes_hired))
+
+# joining the two data frames to create one data frame that can be used for the creation of the graph
+joined_weekly &lt;- left_join(bike_17to22_weekly, bike_16to19_weekly)
+
+# adding two columns to calculate the percent change and filter out data value in week 52 of year 2022
 joined_weekly_mutated &lt;- joined_weekly %&gt;% 
   mutate (Excess_rentals = avg_bikes_17to22_weekly - avg_bikes_16to19_weekly) %&gt;% 
   mutate (Excess_rentals_Perc = Excess_rentals / avg_bikes_16to19_weekly * 100) %&gt;% 
@@ -135,17 +118,5 @@ ggplot(joined_weekly_mutated, aes(x = week, y = Excess_rentals_Perc)) +
   scale_color_manual(values = c(&quot;red&quot;, &quot;green&quot;)) +
   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
   labs(title = &quot;Weekly Changes in TfL bike rentals&quot;, subtitle = &quot;% change from weekly average calculated between 2016 annd 2019&quot;, x = &quot;Week&quot;, y = &quot;Bike Rentals&quot;)</code></pre>
-<pre><code>## Warning: Ignoring unknown aesthetics: x
-## Ignoring unknown aesthetics: x</code></pre>
-<p><img src="/blogs/Bike_files/figure-html/challenge%201%20plot%202-1.png" width="672" /></p>
-<p>For both of these graphs, you have to calculate the expected number of
-rentals per week or month between 2016-2019 and then, see how each
-week/month of 2020-2022 compares to the expected rentals. Think of the
-calculation <code>excess_rentals = actual_rentals - expected_rentals</code>.</p>
-<p>We chose the mean to calculate our expected bike rentals because it
-allows for a more realistic prediction of future bike rentals. Many
-outliers are cause by events such as tube strikes which are not one-off
-occurrences and are likely to repeat in the future. Furthermore, the
-expected rentals are calculated using data from three years so the
-extreme points are softened.</p>
+<p><img src="/blogs/Bike_files/figure-html/challenge%201%20plot%202-1.png" width="648" style="display: block; margin: auto;" /></p>
 </div>

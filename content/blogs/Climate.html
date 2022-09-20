@@ -5,7 +5,7 @@ categories:
 date: "2017-10-31T22:26:13-05:00"
 description: Analysis of climate change and temperature anomalies
 draft: false
-image: Climb_wide.jpg
+image: Climate_change.jpg
 keywords: ""
 slug: climate
 title: Climate change and temperature anomalies
@@ -24,33 +24,18 @@ here</a></p>
 <p>To define temperature anomalies you need to have a reference, or base,
 period which NASA clearly states that it is the period between
 1951-1980.</p>
-<p>Run the code below to load the file:</p>
+<p>Let’s run the code below to load the file:</p>
 <pre class="r"><code>weather &lt;- 
   read_csv(&quot;https://data.giss.nasa.gov/gistemp/tabledata_v4/NH.Ts+dSST.csv&quot;, 
            skip = 1, 
            na = &quot;***&quot;)</code></pre>
-<p>You have two objectives in this section:</p>
-<ol style="list-style-type: decimal">
-<li><p>Select the year and the twelve month variables from the <code>weather</code>
-dataset. We do not need the others (J-D, D-N, DJF, etc.) for this
-assignment. Hint: use <code>select()</code> function.</p></li>
-<li><p>Convert the dataframe from wide to ‘long’ format. Hint: use
-<code>gather()</code> or <code>pivot_longer()</code> function. Name the new dataframe as
-<code>tidyweather</code>, name the variable containing the name of the month as
-<code>month</code>, and the temperature deviation values as <code>delta</code>.</p></li>
-</ol>
+<p>Let’s select the releant columns and convert the datafram from wide to long format.</p>
 <pre class="r"><code># drop unrelated columns
 weather &lt;- select(weather,c(1:13)) 
 
 # convert to tidy dataset for convinence
 tidyweather &lt;- weather %&gt;%  
   pivot_longer(c(2:13), names_to = &quot;month&quot;, values_to = &quot;delta&quot;)</code></pre>
-<p>Inspect your dataframe. It should have three variables now, one each for</p>
-<ol style="list-style-type: decimal">
-<li>year,</li>
-<li>month, and</li>
-<li>delta, or temperature deviation.</li>
-</ol>
 <div id="plotting-information" class="section level2">
 <h2>Plotting Information</h2>
 <p>Let us plot the data using a time-series scatter plot, and add a trend
@@ -72,11 +57,6 @@ ggplot(tidyweather, aes(x=date, y = delta))+
     y=&quot;Temperature Deviation&quot;
   )</code></pre>
 <p><img src="/blogs/Climate_files/figure-html/scatter_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
-<p>Is the effect of increasing temperature more pronounced in some months?
-Use <code>facet_wrap()</code> to produce a seperate scatter plot for each month,
-again with a smoothing line. Your chart should human-readable labels;
-that is, each month should be labeled “Jan”, “Feb”, “Mar” (full or
-abbreviated month names are fine), not <code>1</code>, <code>2</code>, <code>3</code>.</p>
 <p>The graph shows that in relatively cold months (Oct, Nov, Dec, Jan, Feb,
 and Mar), the variation in temperature deviation is higher and the
 slopes of the trend lines are steeper than other months, which indicates
@@ -114,8 +94,6 @@ the different periods using <code>case_when()</code>.</p>
     Year %in% c(1981:2010) ~ &quot;1981-2010&quot;,
     TRUE ~ &quot;2011-present&quot;
   ))</code></pre>
-<p>Inspect the <code>comparison</code> dataframe by clicking on it in the
-<code>Environment</code> pane.</p>
 <p>Now that we have the <code>interval</code> variable, we can create a density plot
 to study the distribution of monthly deviations (<code>delta</code>), grouped by
 the different time periods we are interested in. Set <code>fill</code> to
@@ -169,7 +147,7 @@ amount of heat to warm all the oceans, atmosphere, and land by that
 much. In the past, a one- to two-degree drop was all it took to plunge
 the Earth into the Little Ice Age.</p>
 </blockquote>
-<p>Your task is to construct a confidence interval for the average annual
+<p>Let’s consttruct a confidence interval for the average annual
 delta since 2011, both using a formula and using a bootstrap simulation
 with the <code>infer</code> package. Recall that the dataframe <code>comparison</code> has
 already grouped temperature anomalies according to time intervals; we
@@ -223,11 +201,6 @@ percentile_ci</code></pre>
 ##   lower_ci upper_ci
 ##      &lt;dbl&gt;    &lt;dbl&gt;
 ## 1     1.02     1.11</code></pre>
-<blockquote>
-<p>What is the data showing us? Please type your answer after (and
-outside!) this blockquote. You have to explain what you have done, and
-the interpretation of the result. One paragraph max, please!</p>
-</blockquote>
 <p>Using some of the summary statistics we calculated, we determined the
 t-critical value and margin of error. From this we were able to find the
 confidence interval for the sample mean. The 95% confidence interval for

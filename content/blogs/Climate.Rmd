@@ -5,7 +5,7 @@ categories:
 date: "2017-10-31T22:26:13-05:00"
 description: Analysis of climate change and temperature anomalies
 draft: false
-image: Climb_wide.jpg
+image: Climate_change.jpg
 keywords: ""
 slug: climate
 title: Climate change and temperature anomalies
@@ -57,7 +57,7 @@ To define temperature anomalies you need to have a reference, or base,
 period which NASA clearly states that it is the period between
 1951-1980.
 
-Run the code below to load the file:
+Let's run the code below to load the file:
 
 ```{r weather_data, cache=TRUE}
 
@@ -68,16 +68,8 @@ weather <-
 
 ```
 
-You have two objectives in this section:
+Let's select the releant columns and convert the datafram from wide to long format.
 
-1.  Select the year and the twelve month variables from the `weather`
-    dataset. We do not need the others (J-D, D-N, DJF, etc.) for this
-    assignment. Hint: use `select()` function.
-
-2.  Convert the dataframe from wide to 'long' format. Hint: use
-    `gather()` or `pivot_longer()` function. Name the new dataframe as
-    `tidyweather`, name the variable containing the name of the month as
-    `month`, and the temperature deviation values as `delta`.
 
 ```{r tidyweather}
 
@@ -91,11 +83,6 @@ tidyweather <- weather %>%
 
 ```
 
-Inspect your dataframe. It should have three variables now, one each for
-
-1.  year,
-2.  month, and
-3.  delta, or temperature deviation.
 
 ## Plotting Information
 
@@ -123,12 +110,6 @@ ggplot(tidyweather, aes(x=date, y = delta))+
 
 
 ```
-
-Is the effect of increasing temperature more pronounced in some months?
-Use `facet_wrap()` to produce a seperate scatter plot for each month,
-again with a smoothing line. Your chart should human-readable labels;
-that is, each month should be labeled "Jan", "Feb", "Mar" (full or
-abbreviated month names are fine), not `1`, `2`, `3`.
 
 The graph shows that in relatively cold months (Oct, Nov, Dec, Jan, Feb,
 and Mar), the variation in temperature deviation is higher and the
@@ -181,8 +162,6 @@ comparison <- tidyweather %>%
 
 ```
 
-Inspect the `comparison` dataframe by clicking on it in the
-`Environment` pane.
 
 Now that we have the `interval` variable, we can create a density plot
 to study the distribution of monthly deviations (`delta`), grouped by
@@ -250,7 +229,7 @@ that
 > much. In the past, a one- to two-degree drop was all it took to plunge
 > the Earth into the Little Ice Age.
 
-Your task is to construct a confidence interval for the average annual
+Let's consttruct a confidence interval for the average annual
 delta since 2011, both using a formula and using a bootstrap simulation
 with the `infer` package. Recall that the dataframe `comparison` has
 already grouped temperature anomalies according to time intervals; we
@@ -299,9 +278,6 @@ percentile_ci
 
 ```
 
-> What is the data showing us? Please type your answer after (and
-> outside!) this blockquote. You have to explain what you have done, and
-> the interpretation of the result. One paragraph max, please!
 
 Using some of the summary statistics we calculated, we determined the
 t-critical value and margin of error. From this we were able to find the
