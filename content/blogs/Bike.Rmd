@@ -1,0 +1,155 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T22:26:13-05:00"
+description: Analysis of TfL bike rentals over the past years
+draft: false
+image: Climb_wide.jpg
+keywords: ""
+slug: bike
+title: TfL bike rental analysis
+---
+
+
+```{r load-libraries, include=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(httr)
+library(readxl)
+library(vroom)
+library(wbstats)
+library(countrycode)
+library(patchwork)
+library(gganimate)
+```
+
+# Excess rentals in TfL bike sharing
+
+Let's have a look at TfL data on how many bikes were hired every single day over the past few years. We can get the latest data by running the following:
+
+```{r, get_tfl_data, cache=TRUE}
+url <- "https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx"
+
+# Download TFL data to temporary file
+httr::GET(url, write_disk(bike.temp <- tempfile(fileext = ".xlsx")))
+
+# Use read_excel to read it as dataframe
+bike0 <- read_excel(bike.temp,
+                   sheet = "Data",
+                   range = cell_cols("A:B"))
+
+# change dates to get year, month, and week
+bike <- bike0 %>% 
+  clean_names() %>% 
+  rename (bikes_hired = number_of_bicycle_hires) %>% 
+  mutate (year = year(day),
+          month = lubridate::month(day, label = TRUE),
+          week = isoweek(day))
+
+```
+
+Let's compare the monthly changes in TfL bike rentals to the average of the years 2017 - 2022:
+
+```{r, challenge 1 plot 1}
+
+glimpse(bike)
+bike
+
+# creating a data frame to calculate the monthly average for years 16 to 19
+bike_16to19 <- bike %>% 
+  filter (year %in% 2016:2019) %>% 
+  group_by (month) %>% 
+  summarize (avg_bikes_16to19 = mean(bikes_hired))
+
+# creating a data frame to calculate the monthly averages for each year from 17 to 22
+bike_17to22 <- bike %>% 
+  filter (year %in% 2017:2022) %>% 
+  group_by (month, year) %>% 
+  summarize (avg_bikes_17to22 = mean(bikes_hired))
+
+# joining the two data frames to create one data frame that can be used for the creation of the graph
+joined <- left_join(bike_17to22, bike_16to19)
+
+# plotting monthly changes in TfL bike rentals faceted by year 
+ggplot(joined, aes(x = month, group = year)) + 
+  geom_line(aes(y = avg_bikes_16to19), group = 1, color = "blue", size = 1) + 
+  geom_line(aes(y = avg_bikes_17to22, group = 1)) + 
+  geom_ribbon (aes (ymin = avg_bikes_17to22, ymax = pmax(avg_bikes_16to19, avg_bikes_17to22)), fill = "red", alpha=0.3) +
+  geom_ribbon (aes (ymin = avg_bikes_16to19, ymax = pmax(avg_bikes_16to19, avg_bikes_17to22)), fill = "green", alpha=0.3) +
+  facet_wrap(~ year) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Monthly changes in TfL bike rentals", subtitle = "Change from monthly average shown in blue and calculated between 2016 - 2019", x = "", y = "Bike rentals", caption = "Source: TfL, London Data Store") 
+
+
+```
+
+Further, let's have a look at Weekly Changes in TfL bike rentals from 2017 - 2022.
+
+```{r, challenge 1 plot 2}
+
+#bike
+
+# creating a data frame to calculate the weekly average for years 16 to 19
+bike_16to19_weekly <- bike %>% 
+  filter (year %in% 2016:2019) %>% 
+  group_by (week) %>% 
+  summarize (avg_bikes_16to19_weekly = mean(bikes_hired))
+
+# creating a data frame to calculate the weekly averages in bike rentals for each year from 17 to 22
+bike_17to22_weekly <- bike %>% 
+  filter (year %in% 2017:2022) %>% 
+  group_by (week, year) %>% 
+  summarize (avg_bikes_17to22_weekly = mean(bikes_hired))
+
+# joining the two data frames to create one data frame that can be used for the creation of the graph
+joined_weekly <- left_join(bike_17to22_weekly, bike_16to19_weekly)
+
+# adding two columns to calculate the percent change and filter out data value in week 52 of year 2022
+joined_weekly_mutated <- joined_weekly %>% 
+  mutate (Excess_rentals = avg_bikes_17to22_weekly - avg_bikes_16to19_weekly) %>% 
+  mutate (Excess_rentals_Perc = Excess_rentals / avg_bikes_16to19_weekly * 100) %>% 
+  filter(!(week >= 52 & year == 2022)) %>% 
+  mutate(color_id = if_else(Excess_rentals_Perc > 0,
+                          "Positive",
+                          "Negative")) 
+
+# plotting the weekly percentage changes 
+ggplot(joined_weekly_mutated, aes(x = week, y = Excess_rentals_Perc)) + 
+  geom_line() + 
+  
+# creating rectangles to highlight Q2 and Q4
+  geom_rect(aes(x = week, xmin = 14, xmax = 26, ymin = -50, ymax = 100), fill = "grey", alpha = 0.01) + 
+  geom_rect(aes(x = week, xmin = 40, xmax = 52, ymin = -50, ymax = 100), fill = "grey", alpha = 0.01) +
+  
+  facet_wrap (~ year) +
+  theme_bw() +
+  
+#adding fill in between lines and rug at the bottom
+  geom_ribbon(aes(ymin=0, ymax=pmax(Excess_rentals_Perc,0)), fill="green", col="black", alpha=0.2) +
+  geom_ribbon(aes(ymin=pmin(Excess_rentals_Perc,0), ymax=0), fill="red", col="black", alpha=0.2) + 
+  geom_rug(mapping = aes(color = color_id), sides = "b", show.legend = FALSE) +
+  scale_color_manual(values = c("red", "green")) +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  labs(title = "Weekly Changes in TfL bike rentals", subtitle = "% change from weekly average calculated between 2016 annd 2019", x = "Week", y = "Bike Rentals")
+
+```
+
+For both of these graphs, you have to calculate the expected number of
+rentals per week or month between 2016-2019 and then, see how each
+week/month of 2020-2022 compares to the expected rentals. Think of the
+calculation `excess_rentals = actual_rentals - expected_rentals`.
+
+We chose the mean to calculate our expected bike rentals because it
+allows for a more realistic prediction of future bike rentals. Many
+outliers are cause by events such as tube strikes which are not one-off
+occurrences and are likely to repeat in the future. Furthermore, the
+expected rentals are calculated using data from three years so the
+extreme points are softened.
+

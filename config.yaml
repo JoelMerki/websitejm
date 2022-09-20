@@ -76,35 +76,35 @@ params:
       # - name: Elements
       #   url: elements.html
     menu: Menu
-    subtitle: LBS MAM'23
+    subtitle: LBS MAM '23
     title: Joël Merki
   tiles:
     enable: yes
     showcase:
-      - image: pic01.jpg
-        # subtitle: Ipsum Dolor Sit Amet
+      - image: Glacier.jpg
+        subtitle: A short introduction to my experiences and interests
         title: About me
         url: blogs/aliquam
-      - image: pic02.jpg
-        subtitle: Feugiat Amet Tempus
-        title: Tempus
-        url: blogs/tempus
-      - image: pic03.jpg
-        subtitle: Lorem Etiam Nullam
-        title: Magna
-        url: blogs/magna
-      - image: pic04.jpg
-        subtitle: Nisl Sed Aliquam
-        title: Ipsum
-        url: blogs/ipsum
-      - image: pic05.jpg
-        subtitle: Ipsum Dolor Sit Amet
-        title: Consequat
-        url: blogs/ipsum
-      - image: pic06.jpg
-        subtitle: Feugiat Amet Tempus
-        title: Etiam
-        url: blogs/ipsum
+      - image: Waterfall.jpg
+        subtitle: Analysis of TfL bike rentals over the past years
+        title: TfL bike rental analysis
+        url: blogs/bike
+      - image: Stone.jpg
+        subtitle: XXXXXXX
+        title: Climate change and temperature anomalies
+        url: blogs/climate
+      - image: Coast.jpg
+        subtitle: XXXXX
+        title: Omega Group plc- Pay Discrimination 
+        url: blogs/omega
+      # - image: pic05.jpg
+      #   subtitle: Ipsum Dolor Sit Amet
+      #   title: Consequat
+      #   url: blogs/ipsum
+      # - image: pic06.jpg
+      #   subtitle: Feugiat Amet Tempus
+      #   title: Etiam
+      #   url: blogs/ipsum
   two:
     buttonText: All blogs
     enable: yes
