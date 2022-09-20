@@ -9,7 +9,7 @@ disqusShortname: ''
 params:
   banner:
     buttonText: Get Started
-    subtitle: Welcome to my portfolio website, where you can get to know me and some of the work I have done as part of the Masters in Analytics and Management at LBS.
+    subtitle: Welcome to my portfolio website, where you can get to know me and see some of the work I have done as part of the Masters in Analytics and Management at LBS.
     title: Hi, my name is Joël
   blog: {}
   contact:
@@ -82,7 +82,7 @@ params:
     enable: yes
     showcase:
       - image: Glacier.jpg
-        subtitle: A short introduction to my experience and interests
+        subtitle: A short introduction to my experiences and interests
         title: About me
         url: blogs/about_me
       - image: London_bikes.jpg
