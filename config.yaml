@@ -82,7 +82,7 @@ params:
     enable: yes
     showcase:
       - image: Glacier.jpg
-        subtitle: A short introduction to my experiences and interests
+        subtitle: A short introduction to my experience and interests
         title: About me
         url: blogs/about_me
       - image: London_bikes.jpg
